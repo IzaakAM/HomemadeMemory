@@ -1,0 +1,29 @@
+name: CI/CD Docker Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout le code
+        uses: actions/checkout@v3
+
+      - name: Connexion au registre Docker
+        uses: docker/login-action@v2
+        with:
+          registry: registry.robin-joseph.fr
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build et tag de l’image
+        run: |
+          docker build -t registry.robin-joseph.fr/izaak/memory-game:latest .
+
+      - name: Push de l’image
+        run: |
+          docker push registry.robin-joseph.fr/izaak/memory-game:latest
